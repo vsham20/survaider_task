@@ -23,14 +23,21 @@ def people_count_in_each_relationship():
     return count_per_relation
 
 def get_all_data(request):
-    query_kwargs = {}
     filter1 = request.args.get('relationship')
-    filter2 = request.args.get('filter2')
+    filter2 = request.args.get('race')
+    filter3 = request.args.get('gender')
+    query_filter = {}
     if filter1:
-        query_kwargs["filter1"] = filter1
+        query_filter['relationship'] = filter1
     if filter2:
-        query_kwargs["filter2"] = filter2
-    all_data = IndividualDetails.objects.filter('relationship'==filter1)
+        query_filter['race'] = filter2
+    if filter3:
+        query_filter['gender'] = filter3
+    if query_filter.keys():
+        all_data = IndividualDetails.objects.filter(**query_filter)
+    else:
+        all_data = IndividualDetails.objects.all()
+
     pagination, data, offset = for_pagination(all_data)
     return pagination, data, offset
 
